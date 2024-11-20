@@ -1,7 +1,9 @@
 import LikeIcon from '../../../public/assets/images/like-icon.png';
+import AddPostIcon from '../../../public/assets/svg/addpost.svg';
 
 export const homeContent = {
   likeIcon: LikeIcon,
+  addPostIcon: AddPostIcon,
   postDetails: [
     {
       'username': 'Habibi',
