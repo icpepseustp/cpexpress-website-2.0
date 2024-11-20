@@ -1,13 +1,25 @@
 import { navContent } from "@/content/navigation/nav.content"
 import Image from "next/image"
 
-const Nav = () => {
+const NavBar = () => {
+
     return (
-        <div className="w-screen bg-brandDark flex h-[10%] items-center border-b-black border-b-2 px-5 py-1">
-            <Image src={navContent.icpepLogo} width={60} alt={"icpep-logo"}/>
-            <h1 className="font-bold text-brandLight text-2xl ml-4 ">CpExpress</h1>
-        </div>
+        <nav className="w-screen bg-brandDark flex justify-between fixed h-[10%] items-center border-b-black border-b-2 px-5 py-1">
+            <div className="flex items-center">
+                <Image
+                    src={navContent.icpepLogo}
+                    width={60}
+                    alt="ICpEP Logo"
+                    className="mr-4"
+                />
+                <h1 className="font-bold text-brandLight text-2xl">CpExpress</h1>
+            </div>
+            <div className="rounded-full w-11 h-11 bg-brandLight">
+                <Image src='https://avatar.iran.liara.run/public' width={50} height={50} alt="avatar-profile"/>
+            </div>
+        </nav>
     )
 }
 
-export default Nav  
+
+export default NavBar
