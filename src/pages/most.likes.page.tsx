@@ -2,16 +2,16 @@ import PostCard from "@/components/home/postCard"
 import Nav from "@/components/navigation/nav"
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
-
 
 const MostLikesPage = () => {
   const { postDetails, addPostIcon } = homeContent;
 
   const renderPosts = () =>
-    postDetails.map((post, index) => (
-      <PostCard key={index} {...post} />
-    ));
+    postDetails
+      .sort((a, b) => b.likes - a.likes) 
+      .map((post, index) => (
+        <PostCard key={index} {...post} />
+      ));
 
   return (
     <>

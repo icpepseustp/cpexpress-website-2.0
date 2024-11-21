@@ -2,16 +2,16 @@ import PostCard from "@/components/home/postCard"
 import Nav from "@/components/navigation/nav"
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 const HomePage = () => {
-    const { postDetails, addPostIcon } = homeContent;
+  const { postDetails, addPostIcon } = homeContent;
 
   const renderPosts = () =>
-    postDetails.map((post, index) => (
-      <PostCard key={index} {...post} />
-    ));
+    postDetails
+      .sort((a, b) => b.timestamp - a.timestamp) // sort posts by timestamp in descending order
+      .map((post, index) => (
+        <PostCard key={index} {...post} />
+      ));
 
   return (
     <>
@@ -29,4 +29,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomePage
