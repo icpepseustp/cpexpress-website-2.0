@@ -22,7 +22,7 @@ const HomePage = () => {
       ));
 
   return (
-    <>
+    <div className="relative">
       <Nav />
       <div className="w-full pt-[10.2vh] flex flex-col gap-12 py-16 items-center">
         {renderPosts()}
@@ -42,7 +42,7 @@ const HomePage = () => {
         onClose={() => setIsCreatePostOpen(false)}
         onSubmit={handleCreatePost}
       />
-    </>
+    </div>
   );
 };
 

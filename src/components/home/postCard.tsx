@@ -13,7 +13,7 @@ interface PostCardProps {
  */
 const PostCard = ({ username, likes, caption, photo }: PostCardProps) => {
     return (
-        <div className="w-[50%] border-2 border-black px-5 py-3 shadow-2xl">
+        <div className="w-full md:w-[70%] lg:w-[50%] border-2 border-black px-5 py-3 shadow-2xl">
             {/* Header section with user avatar and username */}
             <div className="flex items-center gap-3 mb-5">
                 <div className="rounded-full border-2 w-7 h-7 border-black">
@@ -26,7 +26,7 @@ const PostCard = ({ username, likes, caption, photo }: PostCardProps) => {
             <h1 className="mb-5">{caption}</h1>
 
             {/* Content area for post image or text */}
-            <div className="border-black border-2 h-[400px] rounded-xl">
+            <div className="border-black border-2 h-[200px] lg:h-[400px] rounded-xl">
                 {/* TODO: Add post content image */}
             </div>
 
