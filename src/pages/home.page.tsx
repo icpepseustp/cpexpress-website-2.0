@@ -10,7 +10,7 @@ import { collection, addDoc, getDocs } from "firebase/firestore";
 const HomePage = () => {
   const { postDetails, addPostIcon } = homeContent;
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-  const [posts, setPosts] = useState(postDetails);
+  const [posts, setPosts] = useState(postDetails.map(post => ({ ...post, id: post.username })));
 
   const handleCreatePost = async (post: { caption: string; imageUrl?: string }) => {
     // Simulate post creation logic
@@ -22,6 +22,7 @@ const HomePage = () => {
       caption: post.caption,
       photo: post.imageUrl || '',
       timestamp: Date.now(),
+      id: 'defaultUser' // Temporary ID
     };
     setPosts((prevPosts) => [newPost, ...prevPosts]);
 
@@ -29,6 +30,8 @@ const HomePage = () => {
     try {
       const docRef = await addDoc(collection(db, "posts"), newPost);
       console.log("Document written with ID: ", docRef.id);
+      // Update the ID with the Firestore document ID
+      setPosts((prevPosts) => prevPosts.map(p => p.username === 'defaultUser' ? { ...p, id: docRef.id } : p));
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -56,8 +59,8 @@ const HomePage = () => {
   const renderPosts = () =>
     posts
       .sort((a, b) => b.timestamp - a.timestamp)
-      .map((post, index) => (
-        <PostCard key={index} {...post} />
+      .map((post) => (
+        <PostCard key={post.id} {...post} />
       ));
 
   return (
