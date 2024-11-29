@@ -3,11 +3,15 @@ import Nav from "@/components/navigation/nav"
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { fetchMostLikedPosts } from "../content/mostlikes/mostlikes.content"
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { db } from "../server/firebase";
 
 interface Post {
   id: string;
-  // Add other properties as needed
+  username: string;
+  likes: number;
+  caption: string;
+  photo: string;
 }
 
 const MostLikesPage = () => {
@@ -16,15 +20,31 @@ const MostLikesPage = () => {
 
   useEffect(() => {
     const getPosts = async () => {
-      const mostLikedPosts = await fetchMostLikedPosts()
-      setPosts(mostLikedPosts)
-    }
-    getPosts()
+      try {
+        const postsCollection = collection(db, "posts");
+        const q = query(postsCollection, orderBy("likes", "desc"));
+        const querySnapshot = await getDocs(q);
+        const mostLikedPosts = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            username: data.username || '',
+            likes: data.likes || 0,
+            caption: data.caption || '',
+            photo: data.photo || ''
+          };
+        });
+        setPosts(mostLikedPosts);
+      } catch (error) {
+        console.error('Error fetching most liked posts:', error);
+      }
+    };
+    getPosts();
   }, [])
 
   const renderPosts = () =>
     posts.map((post, index) => (
-      <PostCard key={index} {...post} />
+      <PostCard id = {post.id} username={post.username} likes={post.likes} caption={post.caption} photo={post.photo} key={post.id} />
     ))
 
   return (
