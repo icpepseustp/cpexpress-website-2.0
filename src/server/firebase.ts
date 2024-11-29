@@ -1,6 +1,7 @@
 // /lib/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -22,4 +23,6 @@ if (typeof window !== "undefined") {
   analytics = getAnalytics(app);
 }
 
-export { app, analytics };
+const db = getFirestore(app);
+
+export { app, analytics, db };

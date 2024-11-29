@@ -3,22 +3,64 @@ import Nav from "@/components/navigation/nav"
 import CreatePostPopup from "@/components/home/createPostPopup"
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { db } from "@/server/firebase";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 
 const HomePage = () => {
   const { postDetails, addPostIcon } = homeContent;
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [posts, setPosts] = useState(postDetails.map(post => ({ ...post, id: post.username })));
 
-  const handleCreatePost = async (post: { caption: string; photo?: string }) => {
-    // TODO: Implement post creation logic with Firebase
+  const handleCreatePost = async (post: { caption: string; imageUrl?: string }) => {
+    // Simulate post creation logic
     console.log('Creating post:', post);
+    // Update the posts state with the new post, ensuring all required fields are present
+    const newPost = {
+      username: 'defaultUser', // Default username
+      likes: 0, // Default likes
+      caption: post.caption,
+      photo: post.imageUrl || '',
+      timestamp: Date.now(),
+      id: 'defaultUser' // Temporary ID
+    };
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+
+    // Save the new post to Firestore
+    try {
+      const docRef = await addDoc(collection(db, "posts"), newPost);
+      console.log("Document written with ID: ", docRef.id);
+      // Update the ID with the Firestore document ID
+      setPosts((prevPosts) => prevPosts.map(p => p.username === 'defaultUser' ? { ...p, id: docRef.id } : p));
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   };
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const querySnapshot = await getDocs(collection(db, "posts"));
+      const postsArray = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          username: data.username || '',
+          likes: data.likes || 0,
+          caption: data.caption || '',
+          photo: data.photo || '',
+          timestamp: data.timestamp || Date.now()
+        };
+      });
+      setPosts(postsArray);
+    };
+    fetchPosts();
+  }, []);
+
   const renderPosts = () =>
-    postDetails
+    posts
       .sort((a, b) => b.timestamp - a.timestamp)
-      .map((post, index) => (
-        <PostCard key={index} {...post} />
+      .map((post) => (
+        <PostCard key={post.id} {...post} />
       ));
 
   return (
