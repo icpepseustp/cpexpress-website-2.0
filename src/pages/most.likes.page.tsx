@@ -2,16 +2,30 @@ import PostCard from "@/components/home/postCard"
 import Nav from "@/components/navigation/nav"
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
+import { useEffect, useState } from "react"
+import { fetchMostLikedPosts } from "../content/mostlikes/mostlikes.content"
+
+interface Post {
+  id: string;
+  // Add other properties as needed
+}
 
 const MostLikesPage = () => {
-  const { postDetails, addPostIcon } = homeContent;
+  const [posts, setPosts] = useState<Post[]>([])
+  const { addPostIcon } = homeContent
+
+  useEffect(() => {
+    const getPosts = async () => {
+      const mostLikedPosts = await fetchMostLikedPosts()
+      setPosts(mostLikedPosts)
+    }
+    getPosts()
+  }, [])
 
   const renderPosts = () =>
-    postDetails
-      .sort((a, b) => b.likes - a.likes) 
-      .map((post, index) => (
-        <PostCard id={"post.id"} key={index} {...post} />
-      ));
+    posts.map((post, index) => (
+      <PostCard key={index} {...post} />
+    ))
 
   return (
     <>
@@ -26,7 +40,7 @@ const MostLikesPage = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
 export default MostLikesPage
