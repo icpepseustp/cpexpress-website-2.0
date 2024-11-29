@@ -10,7 +10,7 @@ const MostLikesPage = () => {
     postDetails
       .sort((a, b) => b.likes - a.likes) 
       .map((post, index) => (
-        <PostCard key={index} {...post} />
+        <PostCard id={"post.id"} key={index} {...post} />
       ));
 
   return (
