@@ -1,9 +1,62 @@
 import { LandingContent } from "@/content/landing/landing.content";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import useRouter
+import { useEffect } from "react";
+import { checkSession, setCookie } from "@/utils/auth";
 
 const LandingPage = () => {
   const router = useRouter();
+
+  // Check for existing session on component mount
+  useEffect(() => {
+    if (checkSession()) {
+      router.push('/home');
+    }
+  }, [router]);
+
+  // Function to generate a UUID
+  const generateUUID = (): string => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+      const random = (Math.random() * 16) | 0;
+      const value = char === 'x' ? random : (random & 0x3) | 0x8;
+      return value.toString(16);
+    });
+  };
+
+  // Function to set a cookie with a specified expiration
+  const handleSetCookie = (name: string, value: string, days: number): void => {
+    setCookie(name, value, days);
+  };
+
+  // Function to generate a session token
+  const generateSessionToken = () => {
+    return 'session_' + Math.random().toString(36).substr(2) + Date.now().toString(36);
+  };
+
+  // Function to fetch a random name
+  const fetchRandomName = async () => {
+    const response = await fetch('https://randomuser.me/api/');
+    const data = await response.json();
+    const name = data.results[0].name;
+    return `${name.first}`;
+  };
+
+  // Handle button click
+  const handleProceed = async (): Promise<void> => {
+    const uniqueID = generateUUID(); // Generate a unique ID
+    const token = generateSessionToken(); // Generate a unique session token
+    const name = await fetchRandomName(); // Fetch a random name
+    
+    // Store session data in cookies (1-day expiry for session cookies)
+    handleSetCookie('userID', uniqueID, 1);
+    handleSetCookie('sessionToken', token, 1);
+    handleSetCookie('username', name, 1);
+    
+    console.log(`Unique ID: ${uniqueID}`);
+    console.log(`Session token initialized: ${token}`);
+    console.log(`Assigned name: ${name}`);
+    router.push('/home'); // Redirect to the desired page
+  };
 
   return (
     <div className="h-screen w-screen bg-cover overflow-hidden relative flex justify-center items-center">
@@ -48,7 +101,7 @@ const LandingPage = () => {
         </div>
         <button
           className="text-brandDark text-xs md:text-lg lg:text-xl font-bold italic bg-brandLight px-5 md:px-10 py-4 rounded-full"
-          onClick={() => router.push("/home")}
+          onClick={handleProceed}
         >
           PROCEED TO EXPRESS
         </button>

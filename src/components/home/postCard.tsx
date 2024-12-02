@@ -15,7 +15,7 @@ interface PostCardProps {
 /**
  * PostCard component represents a user's post with a header, content area, and interaction icons.
  */
-const PostCard = ({ username, likes, caption, photo, id }: PostCardProps) => {
+const PostCard = ({ username, likes, caption, id }: PostCardProps) => {
     const [likeCount, setLikeCount] = useState(likes);
 
     const handleLikeClick = async () => {
