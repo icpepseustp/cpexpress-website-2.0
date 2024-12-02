@@ -9,13 +9,13 @@ interface PostCardProps {
     likes: number,
     caption: string,
     photo: string,
-    // id: string
+    id: string
 }
 
 /**
  * PostCard component represents a user's post with a header, content area, and interaction icons.
  */
-const PostCard = ({ username, likes, caption, photo }: PostCardProps) => {
+const PostCard = ({ username, likes, caption, photo, id }: PostCardProps) => {
     const [likeCount, setLikeCount] = useState(likes);
 
     const handleLikeClick = async () => {
@@ -23,7 +23,7 @@ const PostCard = ({ username, likes, caption, photo }: PostCardProps) => {
         setLikeCount(newLikeCount);
 
         try {
-            const postRef = doc(db, 'posts');
+            const postRef = doc(db, 'posts', id);
             await updateDoc(postRef, {
                 likes: newLikeCount
             });
