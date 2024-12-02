@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { checkSession, getSessionUser } from "@/utils/auth";
 import { db } from "@/server/firebase";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 
 // Helper function to get a cookie value by name
 const getCookie = (name: string): string | undefined => {
@@ -50,16 +50,30 @@ const HomePage = () => {
     // Update the local state with the new post
     setPosts((prevPosts) => [newPost, ...prevPosts]);
 
-    // Save the new post to Firestore
+    // Save the new post to Firestore under the user's collection
     try {
-      const docRef = await addDoc(collection(db, "posts"), {
-        id: "", // Placeholder ID to match the required type
-        username: user.username || "", // Ensure username is always a string
+      const userRef = doc(db, "users", user.username);
+      const userDoc = await getDoc(userRef);
+
+      // Create user document if it doesn't exist
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          id: user.userID,
+          username: user.username,
+          createdAt: Date.now()
+        });
+      }
+
+      // Add post to user's posts subcollection
+      const postsCollectionRef = collection(userRef, "posts");
+      const docRef = await addDoc(postsCollectionRef, {
+        username: user.username,
         likes: 0,
         caption: post.caption,
         photo: post.imageUrl || "",
         timestamp: Date.now(),
       });
+
       console.log("Document written with ID: ", docRef.id);
 
       // Update the ID with the Firestore document ID
@@ -75,19 +89,33 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const querySnapshot = await getDocs(collection(db, "posts"));
-      const postsArray = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          username: data.username || "",
-          likes: data.likes || 0,
-          caption: data.caption || "",
-          photo: data.photo || "",
-          timestamp: data.timestamp || Date.now(),
-        };
-      });
-      setPosts(postsArray);
+      try {
+        // Get all users
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const postsArray = [];
+
+        // For each user, get their posts
+        for (const userDoc of usersSnapshot.docs) {
+          const postsSnapshot = await getDocs(collection(userDoc.ref, "posts"));
+          const userPosts = postsSnapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              username: data.username || "",
+              likes: data.likes || 0,
+              caption: data.caption || "",
+              photo: data.photo || "",
+              timestamp: data.timestamp || Date.now(),
+            };
+          });
+          postsArray.push(...userPosts);
+        }
+
+        // Sort posts by timestamp and update state
+        setPosts(postsArray.sort((a, b) => b.timestamp - a.timestamp));
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
     };
     fetchPosts();
   }, []);
