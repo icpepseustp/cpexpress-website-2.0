@@ -48,9 +48,9 @@ const LandingPage = () => {
     const name = await fetchRandomName(); // Fetch a random name
     
     // Store session data in cookies (1-day expiry for session cookies)
-    handleSetCookie('userID', uniqueID, 1);
-    handleSetCookie('sessionToken', token, 1);
-    handleSetCookie('username', name, 1);
+    handleSetCookie('userID', uniqueID, 1460);
+    handleSetCookie('sessionToken', token, 1460);
+    handleSetCookie('username', name, 1460);
     
     console.log(`Unique ID: ${uniqueID}`);
     console.log(`Session token initialized: ${token}`);
