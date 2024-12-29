@@ -46,7 +46,7 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose, onSu
 
   return (
     <div className="fixed inset-0 bg-brandDark bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white border-2 border-brandDark shadow-2xl rounded-xl p-6 w-full max-w-lg">
+      <div className="bg-white border-2 border-brandDark shadow-2xl rounded-xl p-6 w-[90%] max-w-lg">
         <div className="flex items-center mb-4">
           <div className="flex items-center gap-3">
             <div className="rounded-full border-2 w-7 h-7 border-brandDark">

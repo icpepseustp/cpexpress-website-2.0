@@ -1,17 +1,44 @@
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
+import { useState } from 'react'
+import { db } from '@/server/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 interface PostCardProps {
     username: string,
     likes: number,
     caption: string,
-    photo: string
+    photo: string,
+    id: string
 }
 
 /**
  * PostCard component represents a user's post with a header, content area, and interaction icons.
  */
-const PostCard = ({ username, likes, caption, photo }: PostCardProps) => {
+const PostCard = ({ username, likes, caption, id }: PostCardProps) => {
+    const [likeCount, setLikeCount] = useState(likes);
+
+    const handleLikeClick = async () => {
+        const newLikeCount = likeCount + 1;
+        setLikeCount(newLikeCount);
+
+        try {
+            // First get the user document reference
+            const userRef = doc(db, 'users', username);
+            // Then get the post reference from the user's posts subcollection
+            const postRef = doc(userRef, 'posts', id);
+            
+            await updateDoc(postRef, {
+                likes: newLikeCount
+            });
+            console.log('Like count updated successfully');
+        } catch (error) {
+            console.error('Error updating like count:', error);
+            // Revert the like count if update fails
+            setLikeCount(newLikeCount - 1);
+        }
+    };
+
     return (
         <div className="w-full md:w-[70%] lg:w-[50%] border-2 border-black px-5 py-3 shadow-2xl">
             {/* Header section with user avatar and username */}
@@ -32,11 +59,13 @@ const PostCard = ({ username, likes, caption, photo }: PostCardProps) => {
 
             {/* Interaction section with like icon and count */}
             <div className="flex justify-end gap-2 mt-5">
-                <Image src={homeContent.likeIcon} width={25} alt="Like Icon" />
-                <h1>{likes}</h1>
+                <button onClick={handleLikeClick} className="focus:outline-none">
+                    <Image src={homeContent.likeIcon} width={25} alt="Like Icon" />
+                </button>
+                <h1>{likeCount}</h1>
             </div>
         </div>
     )
 }
 
-export default PostCard 
+export default PostCard
