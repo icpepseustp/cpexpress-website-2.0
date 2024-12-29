@@ -3,7 +3,7 @@ import Nav from "@/components/navigation/nav"
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../server/firebase";
 
 interface Post {
@@ -21,20 +21,29 @@ const MostLikesPage = () => {
   useEffect(() => {
     const getPosts = async () => {
       try {
-        const postsCollection = collection(db, "posts");
-        const q = query(postsCollection, orderBy("likes", "desc"));
-        const querySnapshot = await getDocs(q);
-        const mostLikedPosts = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            username: data.username || '',
-            likes: data.likes || 0,
-            caption: data.caption || '',
-            photo: data.photo || ''
-          };
-        });
-        setPosts(mostLikedPosts);
+        // Get all users
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        let allPosts = []
+
+        // For each user, get their posts
+        for (const userDoc of usersSnapshot.docs) {
+          const postsSnapshot = await getDocs(collection(userDoc.ref, "posts"));
+          const userPosts = postsSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              username: data.username || '',
+              likes: data.likes || 0,
+              caption: data.caption || '',
+              photo: data.photo || ''
+            };
+          });
+          allPosts.push(...userPosts);
+        }
+
+        // Sort by likes in descending order
+        const sortedPosts = allPosts.sort((a, b) => b.likes - a.likes);
+        setPosts(sortedPosts);
       } catch (error) {
         console.error('Error fetching most liked posts:', error);
       }
