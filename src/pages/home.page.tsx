@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { checkSession, getSessionUser } from "@/utils/auth";
 import { db } from "@/server/firebase";
-import { collection, addDoc, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, addDoc, onSnapshot } from "firebase/firestore";
 
 // Helper function to get a cookie value by name
 const getCookie = (name: string): string | undefined => {
@@ -18,9 +18,9 @@ const getCookie = (name: string): string | undefined => {
 
 const HomePage = () => {
   const router = useRouter();
-  const { postDetails, addPostIcon } = homeContent;
+  const { addPostIcon } = homeContent;
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-  const [posts, setPosts] = useState(postDetails.map(post => ({ ...post, id: post.username })));
+  const [posts, setPosts] = useState<any[]>([]);
 
   // Check for valid session on component mount
   useEffect(() => {
@@ -30,6 +30,19 @@ const HomePage = () => {
     }
   }, [router]);
 
+  // Real-time listener for posts
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
+      const fetchedPosts = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPosts(fetchedPosts);
+    });
+
+    return () => unsubscribe(); 
+  }, []);
+
   const handleCreatePost = async (post: { caption: string; imageUrl?: string }) => {
     const user = getSessionUser();
     if (!user) {
@@ -37,93 +50,26 @@ const HomePage = () => {
       return;
     }
 
-    // Create the new post object
-    const newPost = {
-      id: "", // Placeholder ID to match the required type
-      username: user.username || "", // Ensure username is always a string
-      likes: 0,
-      caption: post.caption,
-      photo: post.imageUrl || "",
-      timestamp: Date.now(),
-    };
-
-    // Update the local state with the new post
-    setPosts((prevPosts) => [newPost, ...prevPosts]);
-
-    // Save the new post to Firestore under the user's collection
     try {
-      const userRef = doc(db, "users", user.username);
-      const userDoc = await getDoc(userRef);
 
-      // Create user document if it doesn't exist
-      if (!userDoc.exists()) {
-        await setDoc(userRef, {
-          id: user.userID,
-          username: user.username,
-          createdAt: Date.now()
-        });
-      }
-
-      // Add post to user's posts subcollection
-      const postsCollectionRef = collection(userRef, "posts");
-      const docRef = await addDoc(postsCollectionRef, {
-        username: user.username,
+      // Create the new post in Firestore
+      const newPost = {
+        userId: user.userID,
+        username: user.username || "",
         likes: 0,
         caption: post.caption,
         photo: post.imageUrl || "",
         timestamp: Date.now(),
-      });
+      };
 
-      console.log("Document written with ID: ", docRef.id);
+      await addDoc(collection(db, "posts"), newPost);
 
-      // Update the ID with the Firestore document ID
-      setPosts((prevPosts) =>
-        prevPosts.map((p) =>
-          p.timestamp === newPost.timestamp ? { ...p, id: docRef.id } : p
-        )
-      );
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error creating post:", error);
     }
   };
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        // Get all users
-        const usersSnapshot = await getDocs(collection(db, "users"));
-        const postsArray = [];
-
-        // For each user, get their posts
-        for (const userDoc of usersSnapshot.docs) {
-          const postsSnapshot = await getDocs(collection(userDoc.ref, "posts"));
-          const userPosts = postsSnapshot.docs.map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              username: data.username || "",
-              likes: data.likes || 0,
-              caption: data.caption || "",
-              photo: data.photo || "",
-              timestamp: data.timestamp || Date.now(),
-            };
-          });
-          postsArray.push(...userPosts);
-        }
-
-        // Sort posts by timestamp and update state
-        setPosts(postsArray.sort((a, b) => b.timestamp - a.timestamp));
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-    fetchPosts();
-  }, []);
-
-  const renderPosts = () =>
-    posts
-      .sort((a, b) => b.timestamp - a.timestamp)
-      .map((post) => <PostCard key={post.id} {...post} />);
+  const renderPosts = () => posts.map((post) => <PostCard key={post.id} {...post} />);
 
   return (
     <div className="relative">
