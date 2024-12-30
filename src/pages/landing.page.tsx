@@ -3,6 +3,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { useEffect } from "react";
 import { checkSession, setCookie } from "@/utils/auth";
+import { storage } from "@/server/firebase";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { createDocument } from "@/server/firestoreservice";
+import { uploadFile } from "@/server/storageservice";
 
 const LandingPage = () => {
   const router = useRouter();
@@ -41,21 +45,39 @@ const LandingPage = () => {
     return `${name.first}`;
   };
 
+  const fetchRandomImage = async (id: string) => {
+    const image = await fetch('https://avatar.iran.liara.run/public');
+    const imageBlob = await image.blob();
+    const fileName = `avatar/${id}.jpg`;
+    return await uploadFile(fileName, imageBlob);
+  }
+
   // Handle button click
   const handleProceed = async (): Promise<void> => {
-    const uniqueID = generateUUID(); // Generate a unique ID
-    const token = generateSessionToken(); // Generate a unique session token
-    const name = await fetchRandomName(); // Fetch a random name
-    
-    // Store session data in cookies (1-day expiry for session cookies)
-    handleSetCookie('userID', uniqueID, 1460);
-    handleSetCookie('sessionToken', token, 1460);
-    handleSetCookie('username', name, 1460);
-    
-    console.log(`Unique ID: ${uniqueID}`);
-    console.log(`Session token initialized: ${token}`);
-    console.log(`Assigned name: ${name}`);
-    router.push('/home'); // Redirect to the desired page
+    try {
+      const uniqueID = generateUUID(); 
+      const token = generateSessionToken(); 
+      const name = await fetchRandomName();  
+      const image = await fetchRandomImage(uniqueID);
+      
+      handleSetCookie('sessionToken', token, 1460);
+      
+      console.log(`Unique ID: ${uniqueID}`);
+      console.log(`Session token initialized: ${token}`);
+      console.log(`Assigned name: ${name}`);
+      
+
+      createDocument('users', {
+          id: uniqueID, 
+          username: name, 
+          photo: image, 
+          createdAt: Date.now() 
+      });
+
+      router.push('/home'); 
+    } catch (error) {
+      console.error("Error creating session:", error);
+    }
   };
 
   return (

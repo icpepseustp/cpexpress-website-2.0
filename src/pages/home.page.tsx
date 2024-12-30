@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { checkSession, getSessionUser } from "@/utils/auth";
 import { db } from "@/server/firebase";
 import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import { createDocument } from "@/server/firestoreservice";
 
 // Helper function to get a cookie value by name
 const getCookie = (name: string): string | undefined => {
@@ -51,8 +52,6 @@ const HomePage = () => {
     }
 
     try {
-
-      // Create the new post in Firestore
       const newPost = {
         userId: user.userID,
         username: user.username || "",
@@ -62,8 +61,7 @@ const HomePage = () => {
         timestamp: Date.now(),
       };
 
-      await addDoc(collection(db, "posts"), newPost);
-
+      createDocument("posts", newPost);
     } catch (error) {
       console.error("Error creating post:", error);
     }
