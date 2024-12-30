@@ -1,13 +1,12 @@
 import { navContent } from "@/content/navigation/nav.content"
 import { readDocument } from "@/server/firestoreservice"
-import { getAuth } from "firebase/auth"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const NavBar = () => {
-  const { icpepLogo, hamburgerMenu } = navContent
+  const { icpepLogo } = navContent
   const pathname = usePathname()
 
   const [isOpen, setIsOpen] = useState(false);

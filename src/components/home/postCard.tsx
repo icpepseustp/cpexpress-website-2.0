@@ -4,19 +4,12 @@ import { useState } from 'react'
 import { db } from '@/server/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 
-interface PostCardProps {
-    username: string,
-    likes: number,
-    caption: string,
-    photo: string,
-    id: string
-}
 
 /**
  * PostCard component represents a user's post with a header, content area, and interaction icons.
  */
-const PostCard = ({ username, likes, caption, id, photo }: PostCardProps) => {
-    const [likeCount, setLikeCount] = useState(likes);
+const PostCard = ({ ...post }) => {
+    const [likeCount, setLikeCount] = useState(post.likes);
 
     const handleLikeClick = async () => {
         const newLikeCount = likeCount + 1;
@@ -24,9 +17,9 @@ const PostCard = ({ username, likes, caption, id, photo }: PostCardProps) => {
 
         try {
             // First get the user document reference
-            const userRef = doc(db, 'users', username);
+            const userRef = doc(db, 'users', post.username);
             // Then get the post reference from the user's posts subcollection
-            const postRef = doc(userRef, 'posts', id);
+            const postRef = doc(userRef, 'posts', post.id);
             
             await updateDoc(postRef, {
                 likes: newLikeCount
@@ -44,18 +37,18 @@ const PostCard = ({ username, likes, caption, id, photo }: PostCardProps) => {
             {/* Header section with user avatar and username */}
             <div className="flex items-center gap-3 mb-5">
                 <div className="rounded-full border-2 w-7 h-7 border-black">
-                    {/* TODO: Add user avatar image */}
+                    <Image src={post.avatar} alt="User Avatar" width={50} height={50}/>
                 </div>
-                <h1>{username}</h1>
+                <h1>{post.username}</h1>
             </div>
 
             {/* caption */}
-            <h1 className="mb-5">{caption}</h1>
+            <h1 className="mb-5">{post.caption}</h1>
 
             {/* Content area for post image or text */}
-            {photo && (
+            {post.photo && (
                 <div className="border-black border-2 h-[200px] lg:h-[400px] rounded-xl">
-                    <Image src={photo} alt="Post Image" width={400} height={200} className="w-full h-full object-cover object-center rounded-xl" />
+                    <Image src={post.photo} alt="Post Image" width={400} height={200} className="w-full h-full object-cover object-center rounded-xl" />
                 </div>
             )}
 

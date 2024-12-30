@@ -3,8 +3,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { useEffect } from "react";
 import { checkSession, setCookie } from "@/utils/auth";
-import { storage } from "@/server/firebase";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { createDocument } from "@/server/firestoreservice";
 import { uploadFile } from "@/server/storageservice";
 
@@ -62,6 +60,7 @@ const LandingPage = () => {
       
       handleSetCookie('sessionToken', token, 1460);
       handleSetCookie('uniqueID', uniqueID, 1460);
+      handleSetCookie('username', name, 1460);
       
       console.log(`Unique ID: ${uniqueID}`);
       console.log(`Session token initialized: ${token}`);
