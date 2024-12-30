@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     domains: [
       'avatar.iran.liara.run',
-      'imgs.search.brave.com'
+      'imgs.search.brave.com',
+      'firebasestorage.googleapis.com'
     ],    
   },
 };
