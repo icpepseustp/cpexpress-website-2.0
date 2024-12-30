@@ -16,14 +16,10 @@ const PostCard = ({ ...post }) => {
         setLikeCount(newLikeCount);
 
         try {
-            // First get the user document reference
-            const userRef = doc(db, 'users', post.username);
-            // Then get the post reference from the user's posts subcollection
-            const postRef = doc(userRef, 'posts', post.id);
             
-            await updateDoc(postRef, {
-                likes: newLikeCount
-            });
+            // await updateDoc(postRef, {
+            //     likes: newLikeCount
+            // });
             console.log('Like count updated successfully');
         } catch (error) {
             console.error('Error updating like count:', error);

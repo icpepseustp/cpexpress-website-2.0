@@ -39,29 +39,26 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) =>
     try {
       const currentUser = await readDocument('users', 'uniqueID');
       const userAvatar = currentUser[0].photo || '';
+      setIsLoading(true);
+      
+      const imageName = `postImages/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.jpg`;
+      const response = await fetch(selectedImage!);
+      const blob = await response.blob();
+      const imageUrl = selectedImage && await uploadFile(imageName, blob);
 
-      if (selectedImage) {
-        setIsLoading(true);
-
-        const imageName = `postImages/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.jpg`;
-        const response = await fetch(selectedImage);
-        const blob = await response.blob();
-        const imageUrl = await uploadFile(imageName, blob);
-
-        const newPost = {
-          userId: user.userID,
-          username: user.username || '',
-          likes: 0,
-          caption: caption,
-          photo: imageUrl, 
-          timestamp: Date.now(),
-          avatar: userAvatar,
-        };
-        createDocument('posts', newPost);
-        setCaption('');
-        setSelectedImage(null);
-        onClose();
-      }
+      const newPost = {
+        userId: user.userID,
+        username: user.username || '',
+        likes: 0,
+        caption: caption,
+        photo: imageUrl || '', 
+        timestamp: Date.now(),
+        avatar: userAvatar,
+      };
+      createDocument('posts', newPost);
+      setCaption('');
+      setSelectedImage(null);
+      onClose();
     } catch (error) {
       console.error('Error creating post:', error);
     } finally {

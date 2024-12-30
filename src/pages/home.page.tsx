@@ -35,7 +35,9 @@ const HomePage = () => {
       const fetchedPosts = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      } as any));
+      
+      fetchedPosts.sort((a, b) => b.timestamp - a.timestamp);
       setPosts(fetchedPosts);
     });
 
