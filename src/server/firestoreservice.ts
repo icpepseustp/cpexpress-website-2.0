@@ -8,6 +8,7 @@ export const createDocument = async (collectionName: string, data:any) => {
     return { ...data }
 }
 
+
 export const readDocument = async (collectionName: string, fieldName: string) => {
     const collectionRef = collection(db, collectionName)
     const fieldValue = getCookie(fieldName); 

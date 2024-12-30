@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { homeContent } from '@/content/home/home.content';
+import { getSessionUser } from '@/utils/auth';
+import { useRouter } from 'next/navigation';
+import { createDocument, readDocument } from '@/server/firestoreservice';
+import { uploadFile } from '@/server/storageservice';
 
 interface CreatePostPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (post: { caption: string; photo?: string }) => void;
 }
 
-const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose, onSubmit }) => {
+const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) => {
+  const router = useRouter();
   const [caption, setCaption] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,17 +28,40 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose, onSu
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!caption.trim()) return;
+    const user = getSessionUser();
+    if (!user) {
+      router.push('/'); 
+      return;
+    }
 
-    setIsLoading(true);
     try {
-      await onSubmit({
-        caption,
-        ...(selectedImage && { photo: selectedImage }),
-      });
-      onClose();
+      const currentUser = await readDocument('users', 'uniqueID');
+      const userAvatar = currentUser[0].photo || '';
+
+      if (selectedImage) {
+        setIsLoading(true);
+
+        const imageName = `postImages/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.jpg`;
+        const response = await fetch(selectedImage);
+        const blob = await response.blob();
+        const imageUrl = await uploadFile(imageName, blob);
+
+        const newPost = {
+          userId: user.userID,
+          username: user.username || '',
+          likes: 0,
+          caption: caption,
+          photo: imageUrl, 
+          timestamp: Date.now(),
+          avatar: userAvatar,
+        };
+        createDocument('posts', newPost);
+        setCaption('');
+        setSelectedImage(null);
+        onClose();
+      }
     } catch (error) {
       console.error('Error creating post:', error);
     } finally {
@@ -56,7 +83,7 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose, onSu
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleCreatePost} className="space-y-6">
           <div className="space-y-4">
             <textarea
               value={caption}

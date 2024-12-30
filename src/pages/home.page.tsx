@@ -5,10 +5,9 @@ import { homeContent } from "@/content/home/home.content";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { checkSession, getSessionUser } from "@/utils/auth";
+import { checkSession } from "@/utils/auth";
 import { db } from "@/server/firebase";
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
-import { createDocument } from "@/server/firestoreservice";
+import { collection, onSnapshot } from "firebase/firestore";
 
 // Helper function to get a cookie value by name
 const getCookie = (name: string): string | undefined => {
@@ -23,10 +22,9 @@ const HomePage = () => {
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
 
-  // Check for valid session on component mount
   useEffect(() => {
     if (!checkSession()) {
-      router.push('/'); // Redirect to landing if no valid session
+      router.push('/'); 
       return;
     }
   }, [router]);
@@ -43,29 +41,6 @@ const HomePage = () => {
 
     return () => unsubscribe(); 
   }, []);
-
-  const handleCreatePost = async (post: { caption: string; imageUrl?: string }) => {
-    const user = getSessionUser();
-    if (!user) {
-      router.push('/'); // Redirect to landing if session is invalid
-      return;
-    }
-
-    try {
-      const newPost = {
-        userId: user.userID,
-        username: user.username || "",
-        likes: 0,
-        caption: post.caption,
-        photo: post.imageUrl || "",
-        timestamp: Date.now(),
-      };
-
-      createDocument("posts", newPost);
-    } catch (error) {
-      console.error("Error creating post:", error);
-    }
-  };
 
   const renderPosts = () => posts.map((post) => <PostCard key={post.id} {...post} />);
 
@@ -88,7 +63,6 @@ const HomePage = () => {
       <CreatePostPopup
         isOpen={isCreatePostOpen}
         onClose={() => setIsCreatePostOpen(false)}
-        onSubmit={handleCreatePost}
       />
     </div>
   );

@@ -12,7 +12,7 @@ export const getSessionUser = () => {
   if (!checkSession()) return null;
   
   return {
-    userID: getCookie('userID'),
+    userID: getCookie('uniqueID'),
     username: getCookie('username'),
     sessionToken: getCookie('sessionToken')
   };
