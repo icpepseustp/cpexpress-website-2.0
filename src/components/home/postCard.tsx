@@ -15,7 +15,7 @@ interface PostCardProps {
 /**
  * PostCard component represents a user's post with a header, content area, and interaction icons.
  */
-const PostCard = ({ username, likes, caption, id }: PostCardProps) => {
+const PostCard = ({ username, likes, caption, id, photo }: PostCardProps) => {
     const [likeCount, setLikeCount] = useState(likes);
 
     const handleLikeClick = async () => {
@@ -53,9 +53,11 @@ const PostCard = ({ username, likes, caption, id }: PostCardProps) => {
             <h1 className="mb-5">{caption}</h1>
 
             {/* Content area for post image or text */}
-            <div className="border-black border-2 h-[200px] lg:h-[400px] rounded-xl">
-                {/* TODO: Add post content image */}
-            </div>
+            {photo && (
+                <div className="border-black border-2 h-[200px] lg:h-[400px] rounded-xl">
+                    <Image src={photo} alt="Post Image" width={400} height={200} className="w-full h-full object-cover object-center rounded-xl" />
+                </div>
+            )}
 
             {/* Interaction section with like icon and count */}
             <div className="flex justify-end gap-2 mt-5">

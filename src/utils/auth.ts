@@ -3,10 +3,8 @@
 // Check if user has a valid session
 export const checkSession = (): boolean => {
   const sessionToken = getCookie('sessionToken');
-  const userID = getCookie('userID');
-  const username = getCookie('username');
-  
-  return !!(sessionToken && userID && username);
+
+  return !!(sessionToken);
 };
 
 // Get user session data
@@ -32,6 +30,7 @@ export const getCookie = (name: string): string | undefined => {
   const cookie = cookies.find(c => c.startsWith(`${name}=`));
   return cookie ? cookie.split('=')[1] : undefined;
 };
+
 
 export const clearSession = (): void => {
   // Set cookies to expire immediately
