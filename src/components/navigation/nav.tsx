@@ -1,14 +1,23 @@
 import { navContent } from "@/content/navigation/nav.content"
+import { readDocument } from "@/server/firestoreservice"
+import { getAuth } from "firebase/auth"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const NavBar = () => {
   const { icpepLogo, hamburgerMenu } = navContent
   const pathname = usePathname()
 
   const [isOpen, setIsOpen] = useState(false);
+  const [avatar, setAvatar] = useState<string>("");
+  
+  useEffect( () => {
+    readDocument('users', 'uniqueID').then((res) => {
+      setAvatar(res[0].photo);
+    });
+  }, [])
 
   return (
     <nav className="w-screen bg-brandDark flex justify-between fixed h-[10%] items-center   px-5 py-1">
@@ -46,12 +55,12 @@ const NavBar = () => {
           </Link>
         </div>
         <div className="rounded-full w-11 h-11 mr-5 bg-brandLight overflow-hidden">
-          <Image
-            src="https://avatar.iran.liara.run/public"
+          { avatar && <Image
+            src={avatar}
             width={50}
             height={50}
             alt="avatar-profile"
-          />
+          />}
         </div>
       </div>
 

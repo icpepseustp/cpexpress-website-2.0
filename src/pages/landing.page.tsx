@@ -61,6 +61,7 @@ const LandingPage = () => {
       const image = await fetchRandomImage(uniqueID);
       
       handleSetCookie('sessionToken', token, 1460);
+      handleSetCookie('uniqueID', uniqueID, 1460);
       
       console.log(`Unique ID: ${uniqueID}`);
       console.log(`Session token initialized: ${token}`);
@@ -68,7 +69,7 @@ const LandingPage = () => {
       
 
       createDocument('users', {
-          id: uniqueID, 
+          uniqueID: uniqueID, 
           username: name, 
           photo: image, 
           createdAt: Date.now() 
