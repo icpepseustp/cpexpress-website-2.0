@@ -1,9 +1,7 @@
 import { homeContent } from "@/content/home/home.content"
 import Image from "next/image"
 import { useState } from 'react'
-import { db } from '@/server/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
-import { readDocument, updateDocumentField } from "@/server/firestoreservice";
+import { createSubDocument, readDocument, updateDocumentField } from "@/server/firestoreservice";
 
 interface PostDocument {
     id: string;
@@ -28,8 +26,9 @@ const PostCard = ({ ...post }: PostDocument) => {
         try {
             const postDoc = await readDocument('posts', 'timestamp', post.timestamp);
             
-            updateDocumentField('posts', 'likes', newLikeCount, postDoc[0].id); 
-            console.log('Like count updated successfully');
+            await updateDocumentField('posts', 'likes', newLikeCount, postDoc[0].id); 
+            await createSubDocument('users', 'userLikes', postDoc[0]);
+            
         } catch (error) {
             console.error('Error updating like count:', error);
             // Revert the like count if update fails

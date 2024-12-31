@@ -8,6 +8,13 @@ export const createDocument = async (collectionName: string, data:any) => {
     return { ...data }
 }
 
+export const createSubDocument = async (collectionName: string, subCollectionName: string, data: any, fieldValue?: string) => {
+    const docRef = await readDocument(collectionName, 'uniqueID');
+    const documentRef = doc(db, collectionName, docRef[0].id);
+    const collectionRef = collection(documentRef, subCollectionName);
+    await addDoc(collectionRef, data);
+}
+
 
 export const readDocument = async (collectionName: string, fieldName: string, fieldValue?: string) => {
     const collectionRef = collection(db, collectionName);
