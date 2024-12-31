@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore"
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore"
 import { db } from "./firebase";
 import { getCookie } from "@/utils/auth";
 
@@ -9,11 +9,18 @@ export const createDocument = async (collectionName: string, data:any) => {
 }
 
 
-export const readDocument = async (collectionName: string, fieldName: string) => {
-    const collectionRef = collection(db, collectionName)
-    const fieldValue = getCookie(fieldName); 
-    const que = query(collectionRef, where(fieldName, '==', fieldValue));
+export const readDocument = async (collectionName: string, fieldName: string, fieldValue?: string) => {
+    const collectionRef = collection(db, collectionName);
+    const valueToCompare = fieldValue ?? getCookie(fieldName);
+    const que = query(collectionRef, where(fieldName, '==', valueToCompare));
     const querySnapshot = await getDocs(que);
 
-    return querySnapshot.docs.map((doc) => doc.data());
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+};
+
+export const updateDocumentField = async (collectionName: string, fieldName: string, fieldValue: number, id: string) => {
+    const docRef = doc(db, collectionName, id);
+    await updateDoc(docRef, {
+        [fieldName]: fieldValue
+    })
 }

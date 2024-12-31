@@ -3,12 +3,22 @@ import Image from "next/image"
 import { useState } from 'react'
 import { db } from '@/server/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
+import { readDocument, updateDocumentField } from "@/server/firestoreservice";
 
+interface PostDocument {
+    id: string;
+    username: string;
+    avatar: string;
+    caption: string;
+    photo: string;
+    likes: number;
+    timestamp: string;
+}
 
 /**
  * PostCard component represents a user's post with a header, content area, and interaction icons.
  */
-const PostCard = ({ ...post }) => {
+const PostCard = ({ ...post }: PostDocument) => {
     const [likeCount, setLikeCount] = useState(post.likes);
 
     const handleLikeClick = async () => {
@@ -16,10 +26,9 @@ const PostCard = ({ ...post }) => {
         setLikeCount(newLikeCount);
 
         try {
+            const postDoc = await readDocument('posts', 'timestamp', post.timestamp);
             
-            // await updateDoc(postRef, {
-            //     likes: newLikeCount
-            // });
+            updateDocumentField('posts', 'likes', newLikeCount, postDoc[0].id); 
             console.log('Like count updated successfully');
         } catch (error) {
             console.error('Error updating like count:', error);
