@@ -38,7 +38,7 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) =>
 
     try {
       const currentUser = await readDocument('users', 'uniqueID');
-      const userAvatar = currentUser[0].photo || '';
+      const userAvatar = (currentUser[0] as { id: string; photo?: string }).photo || '';
       setIsLoading(true);
       
       const imageName = `postImages/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.jpg`;
