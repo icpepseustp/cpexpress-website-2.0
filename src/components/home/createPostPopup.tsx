@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { homeContent } from '@/content/home/home.content';
 import { getSessionUser } from '@/utils/auth';
@@ -16,6 +16,24 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) =>
   const [caption, setCaption] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [userAvatar, setUserAvatar] = useState<string>('');
+  const user = getSessionUser();
+
+  useEffect(() => {
+    const fetchUserAvatar = async () => {
+      if (user) {
+        try {
+          const currentUser = await readDocument('users', 'uniqueID');
+          const avatar = (currentUser[0] as { docId: string; photo?: string }).photo || '';
+          setUserAvatar(avatar);
+        } catch (error) {
+          console.error('Error fetching user avatar:', error);
+        }
+      }
+    };
+
+    fetchUserAvatar();
+  }, [user]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,7 +56,7 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) =>
 
     try {
       const currentUser = await readDocument('users', 'uniqueID');
-      const userAvatar = (currentUser[0] as { id: string; photo?: string }).photo || '';
+      const userAvatar = (currentUser[0] as { docId: string; photo?: string }).photo || '';
       setIsLoading(true);
       
       const imageName = `postImages/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.jpg`;
@@ -73,10 +91,22 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) =>
       <div className="bg-white border-2 border-brandDark shadow-2xl rounded-xl p-6 w-[90%] max-w-lg">
         <div className="flex items-center mb-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-full border-2 w-7 h-7 border-brandDark">
-              {/* TODO: Add user avatar image */}
+            <div className="rounded-full border-2 w-7 h-7 border-brandDark overflow-hidden">
+              {userAvatar ? (
+                <Image 
+                  src={userAvatar} 
+                  alt="User Avatar" 
+                  width={28} 
+                  height={28} 
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="w-full h-full bg-brandLight flex items-center justify-center text-brandDark">
+                  {user?.username ? user.username[0].toUpperCase() : '👤'}
+                </div>
+              )}
             </div>
-            <h1 className="text-brandDark font-medium">Habibi</h1>
+          <h1 className="text-brandDark font-medium">{user?.username || 'User'}</h1>
           </div>
         </div>
 
@@ -103,7 +133,9 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) =>
               <button
                 type="button"
                 onClick={() => setSelectedImage(null)}
-                className="absolute top-2 right-2 bg-white border-2 border-brandDark rounded-full w-6 h-6 flex items-center justify-center hover:bg-brandLight/20 text-sm"
+                className="absolute top-2 right-2 bg-white border-2 border-brandDark rounded-full w-6 h-6 flex items-center justify-center 
+                hover:bg-brandLight/20 hover:text-brandDark hover:border-brandDark
+                text-sm"
               >
                 ✕
               </button>
@@ -128,14 +160,22 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({ isOpen, onClose }) =>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border-2 border-brandDark rounded-full hover:bg-brandLight/20 text-brandDark"
+                className="px-4 py-2 border-2 border-brandDark rounded-full 
+                hover:bg-brandDark hover:text-white 
+                hover:shadow-md hover:shadow-brandDark/30 
+                text-brandDark 
+                transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!caption.trim() || isLoading}
-                className="px-4 py-2 border-4 border-brandDark rounded-full hover:bg-brandLight/20 text-brandDark font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 border-4 border-brandDark rounded-full 
+                hover:text-white hover:bg-brandDark
+                text-brandDark font-medium 
+                transition-all duration-300
+                disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Creating...' : 'Create Post'}
               </button>

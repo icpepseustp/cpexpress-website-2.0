@@ -71,7 +71,9 @@ const MostLikesPage = () => {
         {isLikesFetched && renderPosts()}
         <div className="fixed right-5 bottom-7 flex flex-col gap-5">
           <button
-            className="border-2 rounded-full border-black p-3 hover:bg-gray-100 transition-colors"
+            className="border-2 rounded-full border-black p-3 
+            hover:scale-105 hover:shadow-md hover:shadow-black/50 
+            transition-all duration-300 ease-in-out"
             onClick={() => setIsCreatePostOpen(true)}
           >
             <Image src={addPostIcon} width={35} alt="Add Post" />
