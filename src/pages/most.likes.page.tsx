@@ -2,7 +2,6 @@ import PostCard from '@/components/home/postCard';
 import Nav from '@/components/navigation/nav';
 import CreatePostPopup from '@/components/home/createPostPopup';
 import { homeContent } from '@/content/home/home.content';
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkSession } from '@/utils/auth';
@@ -53,7 +52,6 @@ const MostLikesPage = () => {
 			const likesData = await readSubCollection('users', 'userLikes');
 			setLikes(likesData);
 			setIsLikesFetched(true);
-			console.log('Likes:', likesData);
 		};
 
 		fetchLikes();
@@ -64,8 +62,6 @@ const MostLikesPage = () => {
 
 		return sortedPosts.map((post) => {
 			const isLiked = likes.some((like) => like.docId === post.id);
-			console.log(isLiked);
-
 			return <PostCard key={post.id} {...post} liked={isLiked} />;
 		});
 	};

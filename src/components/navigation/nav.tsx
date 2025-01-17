@@ -11,11 +11,15 @@ const NavBar = () => {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [avatar, setAvatar] = useState<string>('');
+	const [username, setUsername] = useState<string>('')
+	const [onPicHover, setOnPicHover] = useState<boolean>(false);
 
 	useEffect(() => {
 		readDocument('users', 'uniqueID').then((res) => {
-			setAvatar(res[0].photo);
-		});
+			const userDoc = res[0] as { docId: string; photo: string; username: string };
+			setAvatar(userDoc.photo);
+			setUsername(userDoc.username);
+		  });
 	}, []);
 
 	return (
@@ -50,10 +54,13 @@ const NavBar = () => {
 						</h1>
 					</Link>
 				</div>
-				<div className="rounded-full w-11 h-11 mr-5 bg-brandLight overflow-hidden">
-					{avatar && (
-						<Image src={avatar} width={50} height={50} alt="avatar-profile" />
-					)}
+				<div onMouseEnter={() => setOnPicHover(true)} onMouseLeave={() => setOnPicHover(false)} className="rounded-full cursor-pointer w-11 h-11 mr-5 bg-brandLight overflow-hidden">
+					{avatar && <Image src={avatar} width={50} height={50} alt="avatar-profile" />}
+					{onPicHover 
+					&& <div className='py-1 px-3 absolute right-12 mt-1 rounded-lg bg-brandLight shadow-md'>
+							<h1 className='font-bold'>{username}</h1>
+				  		</div>
+					}
 				</div>
 			</div>
 

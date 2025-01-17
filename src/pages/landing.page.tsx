@@ -61,11 +61,6 @@ const LandingPage = () => {
       handleSetCookie('sessionToken', token, 1460);
       handleSetCookie('uniqueID', uniqueID, 1460);
       handleSetCookie('username', name, 1460);
-      
-      console.log(`Unique ID: ${uniqueID}`);
-      console.log(`Session token initialized: ${token}`);
-      console.log(`Assigned name: ${name}`);
-      
 
       createDocument('users', {
           uniqueID: uniqueID, 

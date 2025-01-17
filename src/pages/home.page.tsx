@@ -1,8 +1,6 @@
 import PostCard from '@/components/home/postCard';
 import Nav from '@/components/navigation/nav';
 import CreatePostPopup from '@/components/home/createPostPopup';
-import { homeContent } from '@/content/home/home.content';
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkSession } from '@/utils/auth';
@@ -11,9 +9,9 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { readSubCollection } from '@/server/firestoreservice';
 import { HiPlusCircle } from 'react-icons/hi2';
 
+
 const HomePage = () => {
 	const router = useRouter();
-	const { addPostIcon } = homeContent;
 	const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 	const [posts, setPosts] = useState<any[]>([]);
 	const [likes, setLikes] = useState<any[]>([]);
@@ -53,7 +51,6 @@ const HomePage = () => {
 			const likesData = await readSubCollection('users', 'userLikes');
 			setLikes(likesData);
 			setIsLikesFetched(true);
-			console.log('Likes:', likesData);
 		};
 
 		fetchLikes();
@@ -62,8 +59,6 @@ const HomePage = () => {
 	const renderPosts = () => {
 		return posts.map((post) => {
 			const isLiked = likes.some((like) => like.docId === post.id);
-			console.log(isLiked);
-
 			return <PostCard key={post.id} {...post} liked={isLiked} />;
 		});
 	};
@@ -85,7 +80,9 @@ const HomePage = () => {
 						</button>
 					</div>
 				</div>
+        
 			</div>
+      
 			<CreatePostPopup
 				isOpen={isCreatePostOpen}
 				onClose={() => setIsCreatePostOpen(false)}
