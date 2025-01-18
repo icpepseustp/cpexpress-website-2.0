@@ -85,7 +85,7 @@ const HomePage = () => {
       
 			<CreatePostPopup
 				isOpen={isCreatePostOpen}
-				onClose={() => setIsCreatePostOpen(false)}
+				setIsCreatePostOpen={setIsCreatePostOpen}
 			/>
 		</div>
 	);

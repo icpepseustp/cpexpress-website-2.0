@@ -12,7 +12,6 @@ import { HiPlusCircle } from 'react-icons/hi2';
 
 const MostLikesPage = () => {
 	const router = useRouter();
-	const { addPostIcon } = homeContent;
 	const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 	const [posts, setPosts] = useState<any[]>([]);
 	const [likes, setLikes] = useState<any[]>([]);
@@ -85,7 +84,7 @@ const MostLikesPage = () => {
 				</div>
 				<CreatePostPopup
 					isOpen={isCreatePostOpen}
-					onClose={() => setIsCreatePostOpen(false)}
+					setIsCreatePostOpen={setIsCreatePostOpen}
 				/>
 			</div>
 		</div>

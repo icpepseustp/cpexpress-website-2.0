@@ -8,12 +8,12 @@ import { uploadFile } from '@/server/storageservice';
 
 interface CreatePostPopupProps {
 	isOpen: boolean;
-	onClose: () => void;
+	setIsCreatePostOpen: (isOpen: boolean) => void;
 }
 
 const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 	isOpen,
-	onClose,
+	setIsCreatePostOpen
 }) => {
 	const router = useRouter();
 	const [caption, setCaption] = useState('');
@@ -50,6 +50,12 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 		}
 	};
 
+	const handleCancel = () => {
+		setCaption('');
+		setSelectedImage(null);
+		setIsCreatePostOpen(false)
+	}
+
 	const handleCreatePost = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const user = getSessionUser();
@@ -83,7 +89,7 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 			createDocument('posts', newPost);
 			setCaption('');
 			setSelectedImage(null);
-			onClose();
+			setIsCreatePostOpen(false);
 		} catch (error) {
 			console.error('Error creating post:', error);
 		} finally {
@@ -95,7 +101,7 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 
 	return (
 		<div className="fixed inset-0 bg-brandDark bg-opacity-50 flex items-center justify-center z-50">
-			<div className="bg-white border border-gray-200 shadow-2xl rounded-xl p-6 w-[90%] max-w-lg">
+			<div className="bg-white  max-h-[80vh] overflow-y-auto border-gray-200 shadow-2xl rounded-xl p-6 w-[90%] max-w-lg">
 				<div className="flex items-center mb-4">
 					<div className="flex items-center gap-3">
 						<div className="rounded-full w-10 h-10 border border-gray-300 overflow-hidden">
@@ -172,12 +178,12 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 						<div className="flex-1 flex justify-end gap-3">
 							<button
 								type="button"
-								onClick={onClose}
+								onClick={handleCancel}
 								className="px-4 py-2 border border-gray-400 rounded-full 
-                hover:bg-brandDark hover:text-white 
-                hover:shadow-md hover:shadow-brandDark/30 
-                text-brandDark 
-                transition-all duration-300"
+										hover:bg-brandDark hover:text-white 
+										hover:shadow-md hover:shadow-brandDark/30 
+										text-brandDark 
+										transition-all duration-300"
 							>
 								Cancel
 							</button>
