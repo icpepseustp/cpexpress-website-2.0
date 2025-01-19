@@ -104,7 +104,7 @@ const LandingPage = () => {
       />
 
       {/* Centered content */}
-      <div className="z-20 flex flex-col items-center justify-center gap-16 relative">
+      <div className="z-20 flex flex-col items-center justify-center gap-4 relative">
         <div className="flex justify-center items-center mr-[4%]">
           <Image className="w-[22%]" src={LandingContent.kuagohLogo} alt="kuagoh-logo" />
           <div className="mt-4">
@@ -114,10 +114,15 @@ const LandingPage = () => {
             <h1 className="text-brandDark text-3xl md:text-6xl lg:text-8xl font-bold italic">
               CPEXPRESS
             </h1>
+            
           </div>
+          
         </div>
+        <p className="text-brandLight text-md md:text-lg lg:text-xl font-medium italic opacity-80 text-center max-w-2xl mx-auto mb-6 md:mb-8 px-4 tracking-wide leading-relaxed transform transition-all duration-300 hover:scale-[1.02] hover:opacity-100">
+          Connect, <span className="text-brandPrimary">Share</span>, Inspire: Your Digital Campus Community
+        </p>
         <button
-          className="text-brandDark text-xs md:text-lg lg:text-xl font-bold italic bg-brandLight px-5 md:px-10 py-4 rounded-full"
+          className="text-brandDark text-md md:text-lg lg:text-xl font-bold italic bg-brandLight px-5 md:px-10 py-4 rounded-full"
           onClick={handleProceed}
         >
           PROCEED TO EXPRESS
