@@ -35,6 +35,19 @@ const PostCard = ({ liked, ...post }: PostDocument) => {
 	Fancybox.bind('[data-fancybox]', {});
   }, [])
 
+  // Function to format timestamp
+  const formatTimestamp = (timestamp: string | number) => {
+    const date = new Date(Number(timestamp));
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   const handleLikeClick = async () => {
     const newLikeCount = isLiked ? likeCount - 1 : likeCount + 1;
     setLikeCount(newLikeCount);
@@ -79,7 +92,10 @@ const PostCard = ({ liked, ...post }: PostDocument) => {
         <div className="rounded-full border w-10 h-10 border-gray-300">
           <Image src={post.avatar} alt="User Avatar" width={50} height={50} />
         </div>
-        <h1 className="font-bold text-lg text-[#1A2C1F]">{post.username}</h1>
+        <div>
+          <h1 className="font-bold text-lg text-[#1A2C1F]">{post.username}</h1>
+          <p className="text-sm text-gray-500">{formatTimestamp(post.timestamp)}</p>
+        </div>
       </div>
 
       {/* Caption */}
