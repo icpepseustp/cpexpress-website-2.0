@@ -1,7 +1,6 @@
 import PostCard from '@/components/home/postCard';
 import Nav from '@/components/navigation/nav';
 import CreatePostPopup from '@/components/home/createPostPopup';
-import { homeContent } from '@/content/home/home.content';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkSession } from '@/utils/auth';
@@ -36,7 +35,6 @@ const MostLikesPage = () => {
 							...doc.data(),
 						} as any)
 				);
-
 				fetchedPosts.sort((a, b) => b.timestamp - a.timestamp);
 				setPosts(fetchedPosts);
 			}
