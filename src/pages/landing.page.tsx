@@ -1,14 +1,15 @@
 import { LandingContent } from "@/content/landing/landing.content";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import useRouter
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { checkSession, setCookie } from "@/utils/auth";
 import { createDocument } from "@/server/firestoreservice";
 import { uploadFile } from "@/server/storageservice";
 
 const LandingPage = () => {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
+  
   // Check for existing session on component mount
   useEffect(() => {
     if (checkSession()) {
@@ -53,6 +54,7 @@ const LandingPage = () => {
   // Handle button click
   const handleProceed = async (): Promise<void> => {
     try {
+      setLoading(true)
       const uniqueID = generateUUID(); 
       const token = generateSessionToken(); 
       const name = await fetchRandomName();  
@@ -68,7 +70,7 @@ const LandingPage = () => {
           photo: image, 
           createdAt: Date.now() 
       });
-
+      setLoading(false)
       router.push('/home'); 
     } catch (error) {
       console.error("Error creating session:", error);
@@ -125,7 +127,7 @@ const LandingPage = () => {
           className="text-brandDark text-md md:text-lg lg:text-xl font-bold italic bg-brandLight px-5 md:px-10 py-4 rounded-full"
           onClick={handleProceed}
         >
-          PROCEED TO EXPRESS
+          {!loading ? 'PROCEED TO EXPRESS' : 'Proceeding...'}
         </button>
       </div>
     </div>
