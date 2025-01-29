@@ -92,20 +92,23 @@ const PostCard = ({ liked, ...post }: PostDocument) => {
           <Image src={post.avatar} alt="User Avatar" width={50} height={50} />
         </div>
         <div>
-          <h1 className="font-bold text-lg text-[#1A2C1F]">{post.username}</h1>
-          <p className="text-sm text-gray-500">{formatTimestamp(post.timestamp)}</p>
+          <h1 className="font-bold text-lg text-[#1A2C1F] overflow-wrap break-word">{post.username}</h1>
+          <p className="text-sm text-gray-500 overflow-wrap break-word">{formatTimestamp(post.timestamp)}</p>
         </div>
       </div>
-
+  
       {/* Caption */}
-      <h1 className="mb-5">{post.caption}</h1>
+      <h1 className="mb-5 break-words" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+        {post.caption}
+      </h1>
 
-      {/* Content area for post image or text */}
+  
+     {/* Content area for post image or text */}
       {post.photo && (
         <div className=" border border-gray-300 h-[200px] lg:h-[400px] rounded-xl">
           <a
             data-fancybox={`image-${post.id}`}
-			href={post.photo}
+            href={post.photo}
             className=" h-full rounded-xl"
           >
             <Image
@@ -113,13 +116,13 @@ const PostCard = ({ liked, ...post }: PostDocument) => {
               alt="Post Image"
               width={400}
               height={200}
-			  className="w-full h-full object-cover object-center rounded-xl"
+              className="w-full h-full object-cover object-center rounded-xl"
             />
           </a>
         </div>
       )}
-
-
+  
+  
       {/* Interaction section with like icon and count */}
       <div className="flex justify-end gap-2 mt-5">
         <button onClick={handleLikeClick} className="focus:outline-none">
