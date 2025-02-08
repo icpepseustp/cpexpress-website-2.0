@@ -26,10 +26,6 @@ const LandingPage = () => {
     });
   };
 
-  // Function to set a cookie with a specified expiration
-  const handleSetCookie = (name: string, value: string, days: number): void => {
-    setCookie(name, value, days);
-  };
 
   // Function to generate a session token
   const generateSessionToken = () => {
@@ -60,9 +56,9 @@ const LandingPage = () => {
       const name = await fetchRandomName();  
       const image = await fetchRandomImage(uniqueID);
       
-      handleSetCookie('sessionToken', token, 1460);
-      handleSetCookie('uniqueID', uniqueID, 1460);
-      handleSetCookie('username', name, 1460);
+      setCookie('sessionToken', token, 1460);
+      setCookie('uniqueID', uniqueID, 1460);
+      setCookie('username', name, 1460);
 
       createDocument('users', {
           uniqueID: uniqueID, 
