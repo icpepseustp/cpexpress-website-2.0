@@ -27,7 +27,7 @@ export const setCookie = (name: string, value: string, days: number): void => {
   
   const date = new Date();
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=None; Secure`;
+  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; domain=express.icpepse-ustp.org/; SameSite=None; Secure`;
 };
 
 export const getCookie = (name: string): string | undefined => {
