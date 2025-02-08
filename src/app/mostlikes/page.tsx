@@ -1,4 +1,3 @@
-'use client'
 
 import MostLikesPage from "@/pages/most.likes.page"
 import { Metadata } from "next"

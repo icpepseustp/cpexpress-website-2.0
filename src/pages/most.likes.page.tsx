@@ -1,3 +1,5 @@
+'use client'
+
 import PostCard from '@/components/home/postCard';
 import Nav from '@/components/navigation/nav';
 import CreatePostPopup from '@/components/home/createPostPopup';

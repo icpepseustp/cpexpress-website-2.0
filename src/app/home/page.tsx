@@ -1,4 +1,3 @@
-'use client'
 
 import HomePage from "@/pages/home.page"
 import { Metadata } from "next"
