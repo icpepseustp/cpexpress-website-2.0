@@ -9,9 +9,24 @@ const inter = Inter({
   display: "swap",                // Use "swap" to improve loading behavior
 });
 
+const seoKeywords = [
+  "ICpEP.SE - CpExpress",
+  "CpExpress",
+  "ICpEP",
+  "Institute of Computer Engineering of the Philippines student edition"
+]
+
 export const metadata: Metadata = {
-  title: 'ICpEP.SE-USTP | CpExpress Website',
+  keywords: seoKeywords,
+  title: {
+    default: 'ICpEP.SE-USTP | CpExpress Website',
+    template: '%s | CpExpress Website',
+  },
   description: 'ICpEP.SE USTP-CDO is the official student organization for Computer Engineering students at the University of Science and Technology of Southern Philippines - Cagayan de Oro.',
+  openGraph: {
+    description: 'ICpEP.SE-USTP | CpExpress Website',
+    images: ['public/assets/images/logo.png']
+  }
 };
 
 export default function RootLayout({
