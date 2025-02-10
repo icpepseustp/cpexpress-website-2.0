@@ -1,4 +1,4 @@
-// Authentication and cookie management utilities
+import Cookies from "js-cookie";
 
 // Check if code is running on the client-side
 const isClient = () => typeof window !== "undefined";
@@ -27,7 +27,7 @@ export const setCookie = (name: string, value: string, days: number): void => {
   
   const date = new Date();
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=None; Secure`;
+  Cookies.set('name', 'value', { expires: 7, path: '/' });
 };
 
 export const getCookie = (name: string): string | undefined => {
