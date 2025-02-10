@@ -27,7 +27,7 @@ export const setCookie = (name: string, value: string, days: number): void => {
   
   const date = new Date();
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-  Cookies.set('name', 'value', { expires: 7, path: '/' });
+  Cookies.set(name, value, { expires: 730, path: '/', secure: true });
 };
 
 export const getCookie = (name: string): string | undefined => {
