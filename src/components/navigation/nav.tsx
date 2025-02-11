@@ -58,7 +58,7 @@ const NavBar = () => {
 					{avatar && <Image src={avatar} width={50} height={50} alt="avatar-profile" />}
 					{onPicHover 
 					&& <div className='py-1 px-3 absolute right-12 mt-1 rounded-lg bg-brandLight shadow-md'>
-							<h1 className='font-bold'>{username}</h1>
+							<h2 className='font-bold'>{username}</h2>
 				  		</div>
 					}
 				</div>
