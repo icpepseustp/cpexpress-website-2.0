@@ -78,7 +78,7 @@ const MostLikesPage = () => {
 							onClick={() => setIsCreatePostOpen(true)}
 						>
 							{/* <Image src={addPostIcon} width={35} alt="Add Post" /> */}
-							<HiPlusCircle size={60} color="#1A2C1F" />
+							<h1><HiPlusCircle size={60} color="#1A2C1F" /></h1>
 						</button>
 					</div>
 				</div>
