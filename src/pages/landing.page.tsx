@@ -109,9 +109,9 @@ const LandingPage = () => {
             <h1 className="text-brandLight text-4xl md:text-7xl lg:text-9xl font-bold italic">
               ICPEP.SE
             </h1>
-            <h1 className="text-brandDark text-3xl md:text-6xl lg:text-8xl font-bold italic">
+            <h2 className="text-brandDark text-3xl md:text-6xl lg:text-8xl font-bold italic">
               CPEXPRESS
-            </h1>
+            </h2>
             
           </div>
           
