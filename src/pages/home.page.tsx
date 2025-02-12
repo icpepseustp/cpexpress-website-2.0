@@ -78,8 +78,9 @@ const HomePage = () => {
 							onClick={() => setIsCreatePostOpen(true)}
 						>
 							{/* <Image src={addPostIcon} width={35} alt="Add Post" /> */}
-							<h1><HiPlusCircle size={60} color="#1A2C1F" /></h1>
-							<h2></h2>
+							<h1 className='invisible'> icpepse</h1>
+							<h2 className='invisible'>icpepse</h2>
+							<HiPlusCircle size={60} color="#1A2C1F" />
 						</button>
 					</div>
 				</div>
