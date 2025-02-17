@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: 'ICpEP.SE-USTP | CpExpress Website',
     template: '%s | CpExpress Website',
   },
-  description: 'ICpEP.SE USTP-CDO is the official student organization for Computer Engineering students at the University of Science and Technology of Southern Philippines - Cagayan de Oro.',
+  description: 'ICpEP.SE USTP-CDO is the official student organization for Computer Engineering students at USTP Cagayan de Oro.',
   openGraph: {
     description: 'ICpEP.SE-USTP | CpExpress Website',
     images: ['public/assets/images/logo.png']
