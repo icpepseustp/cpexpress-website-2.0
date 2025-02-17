@@ -19,12 +19,12 @@ const seoKeywords = [
 export const metadata: Metadata = {
   keywords: seoKeywords,
   title: {
-    default: 'ICpEP.SE-USTP | CpExpress Website',
-    template: '%s | CpExpress Website',
+    default: 'ICpEP.SE - CpExpress | USTP Computer Engineering',
+    template: '%s | CpExpress - ICpEP.SE USTP'
   },
-  description: 'ICpEP.SE USTP-CDO is the official student organization for Computer Engineering students at USTP Cagayan de Oro.',
+  description: 'ICpEP.SE - CpExpress is the official Computer Engineering student organization at USTP Cagayan de Oro, part of the Institute of Computer Engineering of the Philippines.',
   openGraph: {
-    description: 'ICpEP.SE-USTP | CpExpress Website',
+    description: 'ICpEP.SE - CpExpress, the official Computer Engineering student organization at USTP, fostering innovation and collaboration.',
     images: ['public/assets/images/logo.png']
   }
 };
