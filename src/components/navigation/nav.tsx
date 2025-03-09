@@ -34,25 +34,18 @@ const NavBar = () => {
 			{/* Menu for large screens */}
 			<div className="hidden md:flex gap-10 items-center">
 				<div className="flex gap-5">
-					<Link href="/home">
-						<h1
-							className={`text-brandLight font-bold ${
-								pathname === '/home' && 'border-b-[3px] border-brandLight'
-							}`}
-						>
-							Home
-						</h1>
-					</Link>
+					{navContent.navItems.map((item, index) => (
+						<Link key={index} href={item.href}>
+							<h1
+								className={`text-brandLight font-bold ${
+									pathname === item.href && 'border-b-[3px] border-brandLight'
+								}`}
+							>
+								{item.name}
+							</h1>
+						</Link>	
+					))}
 
-					<Link href="/mostlikes">
-						<h1
-							className={`text-brandLight font-bold ${
-								pathname === '/mostlikes' && 'border-b-[3px] border-brandLight'
-							}`}
-						>
-							Most Likes
-						</h1>
-					</Link>
 				</div>
 				<div onMouseEnter={() => setOnPicHover(true)} onMouseLeave={() => setOnPicHover(false)} className="rounded-full cursor-pointer w-11 h-11 mr-5 bg-brandLight overflow-hidden">
 					{avatar && <Image src={avatar} width={50} height={50} alt="avatar-profile" />}

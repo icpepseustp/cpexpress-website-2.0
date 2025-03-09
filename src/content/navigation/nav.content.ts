@@ -7,5 +7,6 @@ export const navContent = {
     navItems: [
         {name: 'Home', href: '/home'},
         {name: 'Most Likes', href: '/mostlikes'},  
+        {name: 'Concerns', href: '/concerns'},
     ]
 }

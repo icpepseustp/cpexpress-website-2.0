@@ -21,14 +21,16 @@ interface PostDocument {
   likes: number;
   timestamp: string;
   liked: boolean;
+  currentRoute: string
 }
 
 /**
  * PostCard component represents a user's post with a header, content area, and interaction icons.
  */
-const PostCard = ({ liked, ...post }: PostDocument) => {
+const PostCard = ({ liked, currentRoute, ...post }: PostDocument) => {
   const [likeCount, setLikeCount] = useState(post.likes);
   const [isLiked, setIsLiked] = useState(liked);
+  const postCol = currentRoute === '/concerns' ? 'concernPosts' : 'posts';
 
   useEffect(() => {
 	Fancybox.bind('[data-fancybox]', {});
@@ -53,9 +55,9 @@ const PostCard = ({ liked, ...post }: PostDocument) => {
     setIsLiked(!isLiked);
 
     try {
-      const postDoc = await readDocument('posts', 'timestamp', post.timestamp);
+      const postDoc = await readDocument(postCol, 'timestamp', post.timestamp);
       await updateDocumentField(
-        'posts',
+        postCol,
         'likes',
         newLikeCount,
         postDoc[0].docId

@@ -4,16 +4,17 @@ import PostCard from '@/components/home/postCard';
 import Nav from '@/components/navigation/nav';
 import CreatePostPopup from '@/components/home/createPostPopup';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { checkSession } from '@/utils/auth';
 import { db } from '@/server/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { readSubCollection } from '@/server/firestoreservice';
+import { readCollection, readSubCollection } from '@/server/firestoreservice';
 import { HiPlusCircle } from 'react-icons/hi2';
 
 
 const HomePage = () => {
 	const router = useRouter();
+	const currRoute = usePathname()
 	const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 	const [posts, setPosts] = useState<any[]>([]);
 	const [likes, setLikes] = useState<any[]>([]);
@@ -28,23 +29,12 @@ const HomePage = () => {
 
 	// Real-time listener for posts
 	useEffect(() => {
-		const unsubscribe = onSnapshot(
-			collection(db, 'posts'),
-			async (snapshot) => {
-				const fetchedPosts = snapshot.docs.map(
-					(doc) =>
-						({
-							id: doc.id,
-							...doc.data(),
-						} as any)
-				);
-
-				fetchedPosts.sort((a, b) => b.timestamp - a.timestamp);
-				setPosts(fetchedPosts);
-			}
-		);
-
-		return () => unsubscribe();
+		const fetchPosts = async () => {
+			const postsData = await readCollection('posts');
+			postsData.sort((a, b) => b.timestamp - a.timestamp);
+			setPosts(postsData);
+		}
+		fetchPosts();
 	}, []);
 
 	// Fetch likes from sub-collection
@@ -61,7 +51,7 @@ const HomePage = () => {
 	const renderPosts = () => {
 		return posts.map((post) => {
 			const isLiked = likes.some((like) => like.docId === post.id);
-			return <PostCard key={post.id} {...post} liked={isLiked} />;
+			return <PostCard key={post.id} {...post} liked={isLiked} currentRoute={currRoute} />;
 		});
 	};
 
@@ -89,6 +79,7 @@ const HomePage = () => {
 			<CreatePostPopup
 				isOpen={isCreatePostOpen}
 				setIsCreatePostOpen={setIsCreatePostOpen}
+				currentRoute={currRoute!}
 			/>
 		</div>
 	);

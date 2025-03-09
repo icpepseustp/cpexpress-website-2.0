@@ -8,12 +8,14 @@ import { uploadFile } from '@/server/storageservice';
 
 interface CreatePostPopupProps {
 	isOpen: boolean;
+	currentRoute: string;
 	setIsCreatePostOpen: (isOpen: boolean) => void;
 }
 
 const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 	isOpen,
-	setIsCreatePostOpen
+	setIsCreatePostOpen,
+	currentRoute
 }) => {
 	const router = useRouter();
 	const [caption, setCaption] = useState('');
@@ -86,7 +88,7 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 				timestamp: Date.now(),
 				avatar: userAvatar,
 			};
-			createDocument('posts', newPost);
+			currentRoute === '/concerns' ? await createDocument('concernPosts', newPost) : await createDocument('posts', newPost);
 			setCaption('');
 			setSelectedImage(null);
 			setIsCreatePostOpen(false);

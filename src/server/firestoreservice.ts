@@ -57,6 +57,13 @@ import {
   
     return querySnapshot.docs.map((doc) => ({ subDocId: doc.id, ...doc.data() }));
   };
+
+  export const readCollection = async (collectionName: string) => {
+    const collectionRef = collection(db, collectionName);
+    const querySnapshot = await getDocs(collectionRef);
+  
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as any));  
+  }
   
   export const readSubCollection = async (collectionName: string, subCollectionName: string) => {
     const docRefs = await readDocument(collectionName, "uniqueID");
