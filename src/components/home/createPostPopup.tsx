@@ -88,7 +88,12 @@ const CreatePostPopup: React.FC<CreatePostPopupProps> = ({
 				timestamp: Date.now(),
 				avatar: userAvatar,
 			};
-			currentRoute === '/concerns' ? await createDocument('concernPosts', newPost) : await createDocument('posts', newPost);
+			if (currentRoute === '/concerns') {
+				await createDocument('concernPosts', newPost);
+			  } else {
+				await createDocument('posts', newPost);
+			  }
+			  
 			setCaption('');
 			setSelectedImage(null);
 			setIsCreatePostOpen(false);
